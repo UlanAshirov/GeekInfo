@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/autFragment">
+
+    <fragment
+        android:id="@+id/autFragment"
+        android:name="com.joma.geekinfo.aut.AutFragment"
+        android:label="fragment_aut"
+        tools:layout="@layout/fragment_aut" />
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.joma.geekinfo.aut.RegisterFragment"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_register" />
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.joma.geekinfo.chat.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" />
+</navigation>

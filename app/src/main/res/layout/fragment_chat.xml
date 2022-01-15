@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".chat.ChatFragment">
+     
+     <RelativeLayout
+         android:id="@+id/myToolbar"
+         android:padding="6dp"
+         android:background="@color/blue"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content">
+         
+         <ImageView
+             android:layout_marginStart="4dp"
+             android:layout_centerVertical="true"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:src="@drawable/ic_menu"/>
+         
+         <LinearLayout
+             android:layout_centerHorizontal="true"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:orientation="horizontal">
+             
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Geek"
+                 android:textColor="@color/white"
+                 android:textSize="40sp"
+                 android:textStyle="bold"
+                 android:fontFamily="sans-serif-condensed"/>
+
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Info"
+                 android:textSize="40sp"
+                 android:textColor="#F44336"/>
+         </LinearLayout>
+         
+         <ImageView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:src="@drawable/ic_baseline_search_24"
+             android:layout_alignParentEnd="true"
+             android:layout_centerVertical="true"/>
+     </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/myToolbar"/>
+</RelativeLayout>
