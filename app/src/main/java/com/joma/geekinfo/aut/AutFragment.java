@@ -30,18 +30,18 @@ public class AutFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentAutBinding.inflate(inflater);
-        binding.btnEnter.setEnabled(false);
-        statusBarChange();
+        binding.btnAut.setEnabled(false);
+//        statusBarChange();
         return binding.getRoot();
     }
 
-    private void statusBarChange() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            Window window = getActivity().getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.parseColor("#c0c0c0"));
-        }
-    }
+//    private void statusBarChange() {
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+//            Window window = getActivity().getWindow();
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            window.setStatusBarColor(Color.parseColor("#4c5272"));
+//        }
+//    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -60,12 +60,12 @@ public class AutFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(binding.etNumberPhone.getText().toString().length() > 0 && binding.etPassword.getText().toString().length() > 0){
-                    binding.btnEnter.setBackgroundResource(R.drawable.circle_button_blue);
-                    binding.btnEnter.setEnabled(true);
+                if(binding.edtUserName.getText().toString().length() > 0 && binding.edtPassword.getText().toString().length() > 0){
+                    binding.btnAut.setBackgroundResource(R.drawable.circle_button_click);
+                    binding.btnAut.setEnabled(true);
                 } else {
-                    binding.btnEnter.setBackgroundResource(R.drawable.circle_button_default);
-                    binding.btnEnter.setEnabled(false);
+                    binding.btnAut.setBackgroundResource(R.drawable.circle_button_default);
+                    binding.btnAut.setEnabled(false);
 
                 }
             }
@@ -75,18 +75,11 @@ public class AutFragment extends Fragment {
 
             }
         };
-        binding.etPassword.addTextChangedListener(textWatcher);
-        binding.etNumberPhone.addTextChangedListener(textWatcher);
+        binding.edtPassword.addTextChangedListener(textWatcher);
+        binding.edtUserName.addTextChangedListener(textWatcher);
     }
 
     private void initListeners() {
-        binding.btnRegister.setOnClickListener(view -> {
-            controller.navigate(R.id.registerFragment);
-        });
-        binding.btnEnter.setOnClickListener(view -> {
-            controller.navigate(R.id.chatFragment);
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(binding.getRoot().getWindowToken(),0);
-        });
+
     }
 }
