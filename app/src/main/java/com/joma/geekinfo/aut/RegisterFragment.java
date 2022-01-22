@@ -17,61 +17,86 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.joma.geekinfo.R;
 import com.joma.geekinfo.databinding.FragmentRegisterBinding;
+
+import java.util.concurrent.TimeUnit;
 
 public class RegisterFragment extends Fragment {
     private FragmentRegisterBinding binding;
     private NavController controller;
+    private FirebaseAuth auth;
+    private String mVerificationId;
+    private PhoneAuthProvider.ForceResendingToken mToken;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentRegisterBinding.inflate(inflater);
-        binding.btnReg.setEnabled(false);
+        auth = FirebaseAuth.getInstance();
         return binding.getRoot();
     }
+
+    private void getListener() {
+        binding.txtSendMessageRegister.setOnClickListener(view -> {
+            String phoneNumber = binding.editPhoneReg.getText().toString();
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                    phoneNumber,
+                    60,
+                    TimeUnit.SECONDS,
+                    requireActivity(),
+                    callbacks);
+        });
+
+        callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            @Override
+            public void onCodeSent(@NonNull String s,
+                                   @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                super.onCodeSent(s, forceResendingToken);
+                mVerificationId = s;
+//                mToken = forceResendingToken;
+            }
+
+            @Override
+            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                signWithPhoneAuthCredential(phoneAuthCredential);
+            }
+
+            @Override
+            public void onVerificationFailed(@NonNull FirebaseException e) {
+
+            }
+        };
+    }
+
+    private void signWithPhoneAuthCredential(PhoneAuthCredential credential) {
+        auth.signInWithCredential(credential).
+                addOnCompleteListener(requireActivity(),
+                        task -> {
+                            if (task.isSuccessful()) {
+                                controller.navigate(R.id.chatFragment);
+                                controller.navigateUp();
+                            }else {
+                                Toast.makeText(requireContext(), "Пошел на хуй", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         controller = Navigation.findNavController(view);
         getListener();
-        initListener();
-    }
-
-    private void initListener() {
-        binding.btnReg.setOnClickListener(v -> {
-            controller.navigate(R.id.chatFragment);
-        });
-    }
-
-    private void getListener() {
-        TextWatcher textWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(binding.editNameReg.getText().toString().length() > 0 && binding.editPhoneReg.getText().toString().length()>0 && binding.editPasswordReg.getText().toString().length()> 0){
-                    binding.btnReg.setBackgroundResource(R.drawable.circle_button_click);
-                    binding.btnReg.setEnabled(true);
-                } else {
-                    binding.btnReg.setBackgroundResource(R.drawable.circle_button_default);
-                    binding.btnReg.setEnabled(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        };
-        binding.editNameReg.addTextChangedListener(textWatcher);
-        binding.editPasswordReg.addTextChangedListener(textWatcher);
-        binding.editPhoneReg.addTextChangedListener(textWatcher);
     }
 }

@@ -1,8 +1,5 @@
 package com.joma.geekinfo.aut;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,44 +10,120 @@ import androidx.navigation.Navigation;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-
+import android.widget.Toast;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.joma.geekinfo.R;
 import com.joma.geekinfo.databinding.FragmentAutBinding;
+
+import java.util.concurrent.TimeUnit;
 
 public class AutFragment extends Fragment {
     private FragmentAutBinding binding;
     private NavController controller;
+    private String verificationCodeBySystem;
+    private PhoneAuthProvider.ForceResendingToken token;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener listener;
+    private    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks ;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentAutBinding.inflate(inflater);
-        binding.btnAut.setEnabled(false);
-//        statusBarChange();
+        // binding.btnAut.setEnabled(false);
+
+        firebaseAuth = FirebaseAuth.getInstance();
         return binding.getRoot();
     }
 
-//    private void statusBarChange() {
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-//            Window window = getActivity().getWindow();
-//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//            window.setStatusBarColor(Color.parseColor("#4c5272"));
-//        }
-//    }
+    private void sendVerificationCodeToUser(String phoneNumber) {
+        /*PhoneAuthOptions options = PhoneAuthOptions.newBuilder(auth)
+                .*/
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                "+996" + phoneNumber,
+                60,
+                TimeUnit.SECONDS,
+                requireActivity(),
+                mCallbacks);
+    }
+
+    private void verifiCode(String code) {
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationCodeBySystem, code);
+        signInTheUserByCredential(credential);
+    }
+
+    private void signInTheUserByCredential(PhoneAuthCredential credential) {
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(requireActivity(), task -> {
+                    if (task.isSuccessful()) {
+                         controller.navigate(R.id.chatFragment);
+                        Toast.makeText(requireContext(), "ЗАяюался алвфыповфыджлпо ", Toast.LENGTH_SHORT).show();
+
+                    } else  {
+                        Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         controller = Navigation.findNavController(view);
-        initListeners();
-        initViews();
+        mCallbacks =
+                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                    @Override
+                    public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                        super.onCodeSent(s, forceResendingToken);
+                        verificationCodeBySystem = s;
+                        token = forceResendingToken;
+                    }
+
+                    @Override
+                    public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                        String code = phoneAuthCredential.getSmsCode();
+                        if (code != null) {
+                            Toast.makeText(requireContext(),"Пшелвафафвы",Toast.LENGTH_LONG).show();
+                            verifiCode(code);
+                        }
+                    }
+
+                    @Override
+                    public void onVerificationFailed(@NonNull FirebaseException e) {
+
+                    }
+                };
+        //initViews();
+        sendMessageRegister();
     }
 
+    private void sendMessageRegister() {
+        binding.btnAut.setOnClickListener(view -> {
+            String phone = binding.edtUserName.getText().toString();
+                Toast.makeText(requireContext(), "Баель", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Ошибка", Toast.LENGTH_SHORT).show();
+        });
+        binding.txtSendMessage.setOnClickListener(view -> {
+            String phoneNumber = binding.edtUserName.getText().toString();
+            Log.e("----------", phoneNumber);
+            sendVerificationCodeToUser(phoneNumber);
+        });
+    }
+
+    private void abobaListener() {
+        listener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+            }
+        };
+    }
     private void initViews() {
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -60,12 +133,12 @@ public class AutFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(binding.edtUserName.getText().toString().length() > 0 && binding.edtPassword.getText().toString().length() > 0){
+                if (binding.edtUserName.getText().toString().length() > 0 && binding.edtPassword.getText().toString().length() > 0) {
                     binding.btnAut.setBackgroundResource(R.drawable.circle_button_click);
-                    binding.btnAut.setEnabled(true);
+                    //  binding.btnAut.setEnabled(true);
                 } else {
                     binding.btnAut.setBackgroundResource(R.drawable.circle_button_default);
-                    binding.btnAut.setEnabled(false);
+                    // binding.btnAut.setEnabled(false);
 
                 }
             }
@@ -77,9 +150,5 @@ public class AutFragment extends Fragment {
         };
         binding.edtPassword.addTextChangedListener(textWatcher);
         binding.edtUserName.addTextChangedListener(textWatcher);
-    }
-
-    private void initListeners() {
-
     }
 }

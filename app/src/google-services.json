@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "296582028884",
+    "project_id": "geekinfo-1b32f",
+    "storage_bucket": "geekinfo-1b32f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296582028884:android:ee9f18266f27d9939ad7c1",
+        "android_client_info": {
+          "package_name": "com.joma.geekinfo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "296582028884-r9t2aj6nmashd5pef3iph1jf2vac3te0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.joma.geekinfo",
+            "certificate_hash": "40188122ab0713ca0fa0d797c6f636f9b289ea48"
+          }
+        },
+        {
+          "client_id": "296582028884-j98cjdsdcmqi2h1l1lg3asj4f8715kud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9y_jX5P33IIVt2--waXH9rqKeRNRCQmI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "296582028884-j98cjdsdcmqi2h1l1lg3asj4f8715kud.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
